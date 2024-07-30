@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prevajalska stran</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+</head>
+<body>
+    <div class="title">
+        <h1>Prevajalec knjig - Mihael</h1>
+    </div>
+    <div class="buttons">
+        <button id="text-mode-btn" class='active'>Prevedi besedilo</button>
+        <button id="file-mode-btn">Prevedi datoteko</button>
+        <button id="file-to-file-mode-btn">Prevedi datoteko v datoteko</button>
+    </div>
+    <div class="container">
+        <div class="section text-section active" id="text-section">
+            <div class="input-section">
+                <div class="left">
+                     <div class="options">
+                        <h2>Prevedi besedilo iz</h2>
+                        <select id="from-lang">
+                            <option value="sl" selected>Slovenščina</option>
+                            <option value="de">Nemški</option>
+                            <option value="en">Angleščina</option>
+                            <option value="it">Italijanščina</option>
+                        </select>
+                    </div>
+                    <textarea id="text-input" placeholder="Tukaj vnesite besedilo ..."></textarea>
+                    <button id="translate-btn" class="custom">Prevesti</button>
+                </div>
+                <div class="right">
+                     <div class="options">
+                        <h2>Prevedi besedilo v</h2>
+                        <select id="to-lang">
+                            <option value="de" selected>Nemški</option>
+                            <option value="en">Angleščina</option>
+                            <option value="sl">Slovenščina</option>
+                            <option value="it">Italijanščina</option>
+                        </select>
+                    </div>
+                    <div id="output"></div>
+                    <button id="download-pdf" class="custom">Prenesi kot PDF</button>
+                </div>
+            </div>
+        </div>
+        <div class="section file-section" id="file-section">
+            <div class="input-section">
+                <div class="left">
+                    <div class="options">
+                        <h2>Prevedi datoteko iz</h2>
+                        <select id="from-lang-file">
+                            <option value="sl" selected>Slovenščina</option>
+                            <option value="de">Nemški</option>
+                            <option value="en">Angleščina</option>
+                            <option value="it">Italijanščina</option>
+                        </select>
+                    </div>
+                    <form action="/upload" class="dropzone" id="file-dropzone"></form>
+                </div>
+                <div class="right">
+                    <div class="options">
+                        <h2>Prevedi datoteko v</h2>
+                        <select id="to-lang-file">
+                            <option value="de" selected>Nemški</option>
+                            <option value="en">Angleščina</option>
+                            <option value="sl">Slovenščina</option>
+                            <option value="it">Italijanščina</option>
+                        </select>
+                    </div>
+                    <div id="file-output"></div>
+                </div>
+            </div>
+        </div>
+        <div class="section file-to-file-section" id="file-to-file-section">
+            <div class="options">
+                <h2>Prevedi datoteko iz</h2>
+                <select id="from-lang-file-to-file">
+                    <option value="sl" selected>Slovenščina</option>
+                    <option value="de">Nemški</option>
+                    <option value="en">Angleščina</option>
+                    <option value="it">Italijanščina</option>
+                </select>
+                <h2>v</h2>
+                <select id="to-lang-file-to-file">
+                    <option value="de" selected>Nemški</option>
+                    <option value="en">Angleščina</option>
+                    <option value="sl">Slovenščina</option>
+                    <option value="it">Italijanščina</option>
+                </select>
+            </div>
+            <form action="/upload-file-to-file" class="dropzone" id="file-to-file-dropzone"></form>
+        </div>
+    </div>
+    <script src="/javascripts/script.js"></script>
+    <script>
+        // Initialize file dropzone
+        Dropzone.options.fileDropzone = {
+            paramName: "file",
+            maxFilesize: 200,
+            acceptedFiles: ".txt,.doc,.docx,.pdf,.csv",
+            autoProcessQueue: true,
+            init: function() {
+                var myDropzone = this;
+                this.on("sending", function(file, xhr, formData) {
+                    formData.append("from", document.getElementById("from-lang-file").value);
+                    formData.append("to", document.getElementById("to-lang-file").value);
+                });
+
+                this.on("success", function(file, response) {
+                    document.getElementById('file-output').textContent = response.translatedText;
+                });
+
+                this.on("error", function(file, errorMessage) {
+                    document.querySelector('.dz-success-mark').style.display = 'none';
+                    console.error('Fehler bei der Dateiübersetzung:', errorMessage);
+                    alert('Fehler bei der Dateiübersetzung. Bitte versuchen Sie es erneut.');
+                });
+            }
+        };
+
+        // Initialize file to file dropzone
+        Dropzone.options.fileToFileDropzone = {
+            paramName: "file",
+            maxFilesize: 10,
+            acceptedFiles: ".txt,.doc,.docx,.pdf",
+            autoProcessQueue: true,
+            init: function() {
+                var myDropzone = this;
+                this.on("sending", function(file, xhr, formData) {
+                    formData.append("from", document.getElementById("from-lang-file-to-file").value);
+                    formData.append("to", document.getElementById("to-lang-file-to-file").value);
+                });
+
+                this.on("success", async function(file, response) {
+                    const translatedText = response.translatedText;
+
+                    const pdfResponse = await fetch('/download-pdf', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ translatedText })
+                    });
+
+                    if (pdfResponse.ok) {
+                        const blob = await pdfResponse.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'translated-file-to-file.pdf';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    } else {
+                        console.error('Fehler beim Erstellen der PDF:', await pdfResponse.text());
+                        alert('Fehler beim Erstellen der PDF. Bitte versuchen Sie es erneut.');
+                    }
+                });
+
+                this.on("error", function(file, errorMessage) {
+                    document.querySelector('.dz-success-mark').style.display = 'none';
+                    console.error('Fehler bei der Dateiübersetzung:', errorMessage);
+                    alert('Fehler bei der Dateiübersetzung. Bitte versuchen Sie es erneut.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

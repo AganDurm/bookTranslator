@@ -1,0 +1,25 @@
+{
+  "name": "book-translator",
+  "version": "0.0.0",
+  "private": true,
+  "main": "app.js",
+  "bin": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@kreisler/js-google-translate-free": "^4.0.2",
+    "axios": "^1.7.2",
+    "cookie-parser": "~1.4.4",
+    "docx": "^8.5.0",
+    "ejs": "3.1.7",
+    "express": "^5.0.0-beta.3",
+    "fontkit": "^2.0.2",
+    "http-errors": "~1.6.3",
+    "mammoth": "^1.8.0",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1"
+  }
+}

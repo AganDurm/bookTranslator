@@ -1,0 +1,125 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-flow: column;
+  font-family: Arial, sans-serif;
+}
+.container {
+  width: 80%;
+  overflow: hidden;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 540px;
+}
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 1px solid #218838;
+  border-radius: 4px;
+  color: #218838;
+  cursor: pointer;
+}
+.buttons button:hover {
+  background-color: #218838;
+  color: white;
+}
+.buttons button.active, .buttons button.custom {
+  background-color: #28a745;
+  color: white;
+}
+.section {
+  display: none;
+}
+.section.active {
+  display: flex;
+  align-items: center;
+}
+.text-section, .file-section, .file-to-file-section {
+  width: 100%;
+  flex-direction: column;
+}
+.input-section, .output-section {
+  display: flex;
+  width: 100%;
+  padding-top: 20px;
+}
+.left, .right {
+  width: 50%;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+div .options {
+  display: flex;
+}
+textarea, input[type="file"] {
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: none;
+}
+button {
+  margin: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 1px solid #218838;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button.custom {
+  background-color: #28a745;
+  color: white;
+}
+button:hover {
+  background-color: #218838;
+}
+#output, #file-output {
+  white-space: pre-wrap;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 300px;
+  overflow-y: auto;
+  font-size: 16px;
+}
+select {
+  padding: 15px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin: 10px;
+  height: 48px;
+}
+.title h1 {
+    margin-bottom: 3rem;
+}
+.dropzone {
+  border: 2px dashed #cccccc;
+  padding: 20px;
+  text-align: center;
+}
+.dz-success-mark {
+  display: none;
+}
+.dz-error-mark {
+  display: none;
+}
+#file-to-file-dropzone {
+  margin-top: 2rem;
+}
